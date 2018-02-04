@@ -1,0 +1,80 @@
+<!--
+	뷰 인스턴스 라이프 사이클
+
+	1. beforeCreate
+	인스턴스가 생성되고 가장 처음으로 실행되는 라이프 사이클 단계.
+	data, method 속성이 인스턴스에 정의되어 있지 않고, 돔과 같은 화면 요서에 접근 불가.
+
+	2. created
+	data, method 속성이 정의되어 있어서 this.data, this.fetchData()와 같은 로직을 이용하여
+	data, method 속성에 정의된 값에 접근하여 로직을 실행할 수 있음.
+	인스턴스가 화면에 부착되기 전이기 때문에 template 속성에 정의된 돔 요소로 접근 불가.
+
+	3. beforeMount
+	template 속성에 지정한 마크업 속성을 render() 함수로 변환후 el 속성에 지정한 화면요소에
+	인스턴스를 부착하기 전에 호출되는 단계. render() 함수가 호축되기 직전의 로직을 추가하는것이 좋음.
+	* render()는 자바스크립트로 화면에 돔을 그리는 함수.
+
+	4. mounted
+	el 속성에서 지정한 화면 요소에 인스턴스가 부착되고 호출되는 단계.
+	template 속성에 정의한 화면 요소에 접근할 수 있어 화면 요소를 제어하는 로직을 수행하기 좋은 단계.
+	다만 돔에 인스턴스가 부착되자마자 바로 호출되기 때문에 하위 컴포넌트나 외부 라이브러리에 의해 추가된 화면 요소들이
+	최종 HTML 코드로 변환되는 시점과 다를 수 있음.
+	* 변환되는 시점이 다를 경우 $nextTick() API를 활용하여 HTML 코드로 최정 파싱될 때까지 기다린후 돔 제어 로직을 추가.
+
+	5. beforeUpdate
+	el 속성에서 지정한 화면 요소에 인스턴스가 부착되고 나면 인스턴스에 정의한 속성들이 화면에 치환됨.
+	치환된 값은 뷰의 반응성(Reactivity)을 제공하기 위해 $watch 속성으로 감시(데이터 관찰)
+	* 뷰의 반응성: 뷰의 특징 중 하나로 코드의 변화에 따라 화면이 반사적으로 반응하여 화면을 빠르게 갱신하는 것을 의미함.
+
+	관찰하고 있는 데이터가 변경되면 가상 돔으로 화면을 다시 그리기 전에 호출되는 단계.
+	변경 예정인 새 데이터에 접근 할 수 있어 변경 예전 데이터의 값과 관련된 로직을 미리 넣을수 있음.
+	이 단계에 값을 변경하는 로직이 추가된다고 하더라도 화면이 다시 그려지지는 않음.
+
+	6. updated
+	데이터가 변경되고 가상 돔으로 다시 화면을 그리고 나면 실행되는 단계.
+	데이터 변경으로 인한 화면 요소 변경까지 완료된 시점이므로 데이터 변경후 화면 요소 제어와 관련된 로직을
+	추가하기 좋은 단계. 이 단계에서 데이터 값을 변경하면 무한 로프에 빠질 수 있기 때문에 값을 변경하려면
+	computed, watch와 같은 속성을 사용해야 함. 따라서 데이터 값을 갱신하는 로직은 가급적 beforeUpdate에 추가하고
+	updated에서는 변경 데이터의 화면 요소와 관련된 로직을 추가흔 것이 좋음. 최종 HTML 코드로 변환되는 시점과 다를 수 있음.
+	* 변환되는 시점이 다를 경우 $nextTick() API를 활용하여 HTML 코드로 최정 파싱될 때까지 기다린후 돔 제어 로직을 추가.
+
+	7. beforeDestroy
+	뷰 인스턴스가 파괴되기 직전에 호출되는 단계. 인스턴스에 접근할 수 있으며, 뷰인스턴스의 데이터를 삭제하기 좋음.
+
+	8. destroy
+	뷰 인스턴스가 파괴도고 나서 호출되는 단계.
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vue Sample</title>
+</head>
+<body>
+	<div id="app">
+		{{ message }}
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+	<script>
+		new Vue({
+			el: '#app',
+			data: {
+				message: 'Hello Vue.js'
+			},
+			beforeCreate: function() {
+				console.log('beforeCreate');
+			},
+			created: function() {
+				console.log('created');
+			},
+			mounted: function() {
+				console.log('mounted');
+				this.message = 'Hello Vue!';
+			},
+			updated: function() {
+				console.log('updated');
+			}
+		});
+	</script>
+</body>
+</html>
