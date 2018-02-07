@@ -1,0 +1,32 @@
+<!--
+	컴포넌트란?
+	- 화면을 구성할 수 있는 블록(특정 영역)을 의미.
+	- 컴포넌트를 활용하면 화면을 빠르게 구조화하여 일괄적 패턴으로 개발 가능.
+
+	- 전역(global) 컴포넌트: 여러 인스턴스에서 공통으로 사용할 수 있음.
+		Vue.component('컴포넌트 이름', {
+			컴포넌트 내용
+		});
+ -->
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Vue Global Component</title>
+</head>
+<body>
+	<div id="app">
+		<button>컴포넌트 등록</button>
+		<my-global-component>전역 컴포넌트 표시</my-component>
+	</div>
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+	<script>
+		Vue.component('my-global-component', {
+			template: '<div>전역 컴포넌트가 등록되었습니다.</div>'
+		});
+
+		new Vue({
+			el: '#app'
+		});
+	</script>
+</body>
+</html>

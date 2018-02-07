@@ -1,0 +1,62 @@
+<!--
+    컴포넌트란?
+    - 화면을 구성할 수 있는 블록(특정 영역)을 의미.
+    - 컴포넌트를 활용하면 화면을 빠르게 구조화하여 일괄적 패턴으로 개발 가능.
+
+    - 전역(global) 컴포넌트: 여러 인스턴스에서 공통으로 사용할 수 있음.
+        Vue.component('컴포넌트 이름', {
+            컴포넌트 내용
+        });
+
+    - 지역(local) 컴포넌트: 특정 인스턴스에서만 유효한 범위를 갖음.
+        new Vue({
+            components: {
+                '컴포넌트 이름': 컴포넌트 내용
+            }
+        });
+ -->
+<html>
+    <head>
+        <title>Vue Local and Global Components</title>
+    </head>
+    <body>
+        <div id="app">
+            <h3>첫 번째 인스턴스 영역</h3>
+            <my-global-component></my-global-component>
+            <my-local-component></my-local-component>
+        </div>
+
+        <hr>
+
+        <div id="app2">역
+            <h3>두 번째 인스턴스 영역</h3>
+            <my-global-component></my-global-component>
+            <my-local-component></my-local-component>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.5.2/dist/vue.js"></script>
+        <script>
+            // 전역 컴포넌트 등록
+            Vue.component('my-global-component', {
+                template: '<div>전역 컴포넌트 입니다.</div>'
+            });
+            // 지역 컴포넌트 내용
+            var localCmp = {
+                template: '<div>지역 컴포넌트 입니다.</div>'
+            };
+
+            new Vue({
+                el: '#app',
+                // 지역 컴포넌트 등록
+                components: {
+                    'my-local-component': localCmp
+                }
+            });
+
+            // 두 번째 인스턴스
+            new Vue({
+                el: '#app2'
+            });
+    </script>
+  </body>
+</html>
