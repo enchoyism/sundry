@@ -1,0 +1,18 @@
+{
+	"name": "toast-ui",
+	"homepage": "https://github.com/enchoyism/sundry/tree/master/test/toast-ui",
+	"description": "toast-ui test",
+	"main": "",
+	"moduleType": [],
+	"license": "MIT",
+	"ignore": [
+		"**/.*",
+		"node_modules",
+		"bower_components",
+		"test",
+		"tests"
+	],
+	"dependencies": {
+		"tui-editor": "^1.0.3"
+	}
+}
