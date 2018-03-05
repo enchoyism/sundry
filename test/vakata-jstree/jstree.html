@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>vakata-jstree</title>
+	<script src="./jquery-1.12.4.min.js"></script>
+	<link rel="stylesheet" href="./style.min.css"/>
+	<script src="./jstree.min.js"></script>
+</head>
+<body>
+	<div id="container">
+		<ul>
+		    <li data-jstree='{"opened":true, "type":"demo"}'>Root node1
+		      	<ul>
+			        <li>b</li>
+			        <li>a</li>
+		      	</ul>
+		    </li>
+		    <li data-jstree='{"opened":true, "type":"demo"}'>Root node2
+		      	<ul>
+		        	<li>b</li>
+		        	<li>a</li>
+		      	</ul>
+		    </li>
+		</ul>
+	</div>
+<script>
+$(function() {
+  	$('#container').jstree({
+	    'core' : {
+	    	"check_callback": true,
+	    	"data": [
+                {"id": "animal", "parent": "#", "text": "Animals"},
+                {"id": "device", "parent": "#", "text": "Devices"},
+                {"id": "dog", "parent": "animal", "text": "Dogs"},
+                {"id": "lion", "parent": "animal", "text": "Lions"},
+                {"id": "mobile", "parent": "device", "text": "Mobile Phones"},
+                {"id": "lappy", "parent": "device", "text": "Laptops"},
+                {"id": "daburman", "parent": "dog", "text": "Dabur Man"},
+                {"id": "Dalmation", "parent": "dog", "text": "Dalmatian"},
+                {"id": "african", "parent": "lion", "text": "African Lion"},
+                {"id": "indian", "parent": "lion", "text": "Indian Lion"},
+                {"id": "apple", "parent": "mobile", "text": "Apple IPhone 6"},
+                {"id": "samsung", "parent": "mobile", "text": "Samsung Note II"},
+                {"id": "lenevo", "parent": "lappy", "text": "Lenevo"},
+                {"id": "hp", "parent": "lappy", "text": "HP"}
+            ]
+    	},
+    	"plugins" : ["unique", "dnd", "wholerow", "contextmenu"]
+ 	});
+});
+
+$('#container').on("changed.jstree", function (e, data) {
+	var v = $('#container').jstree(true).get_json();
+	var mytext = JSON.stringify(v);
+	console.log(mytext);
+	console.log(JSON.parse(mytext));
+});
+</script>
+<!--
+- AJAX 를 이용하여 트리 채우기.
+<div id="container"></div>
+<script>
+$(function() {
+  $('#container').jstree({
+    'core' : {
+      'data' : {
+        "url" : "//www.jstree.com/fiddle/",
+        "dataType" : "json" // needed only if you do not supply JSON headers
+      }
+    }
+  });
+});
+</script>
+-->
+</body>
+</html>
