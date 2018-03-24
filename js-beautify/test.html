@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<textarea id="textarea" style="width: 100%; height: 500px;"></textarea>
+
+	<script src="https://cdn.rawgit.com/beautify-web/js-beautify/v1.7.5/js/lib/beautify-html.js"></script>
+	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript">
+		const html = '<body><div><div></div><div><span><a>test1234</a></span></div></div><div></div></body>';
+		const opts = {
+		    "indent_with_tabs": true,
+		    "eol": "\n",
+		    "end_with_newline": false,
+		    "preserve_newlines": true,
+		    "max_preserve_newlines": 500
+		}
+		const beautifyHtml = html_beautify(html, opts);
+		$('textarea').val(beautifyHtml);
+	</script>
+</body>
+</html>
