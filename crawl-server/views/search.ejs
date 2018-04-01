@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>search</title>
+		<link rel='stylesheet' href='/stylesheets/style.css' />
+	</head>
+  	<body>
+  		<div class="context">
+	  		<input type="hidden" id="searchText" value="<%= search_text %>">
+	  		<% for(var i = 0; i < search_list.length; i++) { %>
+	  			<div><a href="<%= search_list[i].href %>" target="_blank"><%= search_list[i].title %></a></div>
+	  			<div><span style="font-size: smaller; color: green"><%= search_list[i].href %><span></div>
+	  			<div><span style="font-size: smaller; color: grey"><%= search_list[i].contents %><span></div>
+	  			<hr>
+	  		<% } %>
+  		</div>
+
+  		<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  		<script src="/javascripts/mark.js"></script>
+		<script type="text/javascript">
+			var context = document.querySelector(".context");
+			var instance = new Mark(context);
+			var searchTextList = $('#searchText').val().split(',');
+			console.log(searchTextList);
+			for (var i = 0; i < searchTextList.length; i++) {
+				instance.mark(searchTextList[i]);
+			}
+
+		</script>
+  	</body>
+</html>
