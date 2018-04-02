@@ -6,10 +6,10 @@ var ioredis = require('ioredis');
 var async = require('async');
 
 var redis = new ioredis({
-	host: '127.0.0.1',
+	host: '1.209.128.152',
 	port: 6379,
-	db: 0,
-	password: 'redisy470'
+	db: 15,
+	password: 'dkfjskdEsjsi#dksjei'
 });
 
 var REDIS_KEY = 'search';

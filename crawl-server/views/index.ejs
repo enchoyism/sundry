@@ -1,13 +1,75 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title>index</title>
-		<link rel='stylesheet' href='/stylesheets/style.css' />
-	</head>
-  	<body>
-	    <form action="/search" method="POST">
-			<input type="text" placeholder="Search.." name="search">
-			<button type="submit">search</button>
-	    </form>
-  	</body>
+    <head>
+        <title>index</title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+    </head>
+    <body>
+        <input type="text" id="searchField" placeholder="Search.." name="search">
+        <button id="searchBtn">search</button>
+        <div id="search-results"></div>
+
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+        <script src="https://unpkg.com/lunr/lunr.js"></script>
+        <script src="/javascripts/mark.js"></script>
+
+        <script type="text/javascript">
+            jQuery(function ($) {
+                var index, store, data = $.getJSON('/searchIndex.json');
+
+                data.then(function (data) {
+                    store = data.store,
+                    index = lunr.Index.load(data.index);
+                });
+
+                var searchFunc = function () {
+                    console.log('test');
+                    var query = $('#searchField').val();
+
+                    if (query === '') {
+                        jQuery('#search-results').empty();
+                    } else {
+                        var results = index.search(`*${query}*`);
+                        data.then(function (data) {
+                            if (results.length === 0) {
+                                $('#search-results').empty().append('<p><strong>No results found</strong></p>');
+                            } else {
+                                var contents = '<br><br>';
+                                for (var i = 0; i < results.length; i++) {
+                                    var result = results[i];
+                                    contents += '<div><a href="' + store[result.ref].href + '" target="_blank">' + store[result.ref].title + '</a>';
+                                    contents += '<div><span style="font-size: smaller; color: green">' + store[result.ref].href + '"<span></div>';
+                                    contents += '<div><span style="font-size: smaller; color: grey">' + store[result.ref].contents + '"<span></div>';
+
+                                    if (store[result.ref].abstract) {
+                                        contents += '<p>' + store[result.ref].abstract + '</p>';
+                                    }
+                                    contents += '<hr>';
+                                }
+                                $('#search-results').html(contents);
+
+                                var context = document.querySelector("#search-results");
+                                var instance = new Mark(context);
+                                var searchTextList = $('#searchField').val().split(',');
+
+                                for (var i = 0; i < searchTextList.length; i++) {
+                                    instance.mark(searchTextList[i]);
+                                }
+                            }
+                        });
+                    }
+                }
+
+                $('#searchField').keyup(function (e) {
+                    if (e.keyCode !== 13) {
+                        return;
+                    }
+
+                    searchFunc();
+                });
+
+                $('#searchBtn').on('click', searchFunc);
+            });
+        </script>
+    </body>
 </html>

@@ -4,19 +4,10 @@ const oRequest = require('request');
 const oCheerio = require('cheerio');
 const oAsync = require('async');
 const oHe = require('he');
-const oIoRedis = require('ioredis');
+const oLunr = require('lunr');
+const oFs = require('fs');
 
-const oRedis = new oIoRedis({
-	host: '127.0.0.1',
-	port: 6379,
-	db: 0,
-	password: 'redisy470'
-});
-
-const REDIS_KEY = 'search';
-
-// TODO 삭제 (확인용)
-const oResults = [];
+const aResults = [];
 
 const oCrawlingList = {
 	api: {
@@ -52,23 +43,15 @@ const oCrawlApiDoc = (sBaseUrl, sApiType, oCallback) => {
 			sContents = oHe.decode(oContents.text());
 			sContents = sContents.replace(/\s+/g, ' ').trim();
 
-			oRedis.hset(REDIS_KEY, `${sApiType}-${nIndex}`, JSON.stringify({
+			aResults.push({
 				id: `${sApiType}-${nIndex}`, title: sTitle,
 				href: sHref, contents: sContents
-			}), (_oError) => {
-				_oCallback(_oError);
-
-				// TODO 삭제 (확인용)
-				if (!_oError) {
-					oResults.push({
-						id: `${sApiType}-${nIndex}`, title: sTitle,
-						href: sHref, contents: sContents
-					});
-				}
 			});
+
+			_oCallback(null);
 		}, (oError) => {
 			if (oError) {
-				console.log(`redis hset error: ${oError}`);
+				console.log(`make results error: ${oError}`);
 			}
 
 			oCallback(null);
@@ -77,12 +60,6 @@ const oCrawlApiDoc = (sBaseUrl, sApiType, oCallback) => {
 };
 
 oAsync.parallel([
-	// redis clear
-	(oCallback) => {
-		oRedis.del(REDIS_KEY, (oError) => {
-			oCallback(oError);
-		});
-	},
 	// api
 	(oCallback) => {
 		const oApiCrawlInfo = oCrawlingList.api;
@@ -102,12 +79,40 @@ oAsync.parallel([
 ], (oError) => {
 	if (oError) {
 		console.log(oError);
+		process.exit(1);
 	}
 
+	const store = {};
+	const index = oLunr(function () {
+		this.pipeline.reset();
+		this.ref('id');
+		this.field('title');
+		this.field('href');
+		this.field('contents');
+
+		aResults.forEach((oResult) => {
+			oResult.contents = oResult.contents.replace(/\s+/g, ' ').trim();
+			this.add({
+				id: oResult.id,
+				title: oResult.title,
+				href: oResult.href,
+				contents: oResult.contents
+			});
+
+			store[oResult.id] = {
+				id: oResult.id,
+				title: oResult.title,
+				href: oResult.href,
+				contents: oResult.contents
+			};
+		});
+	});
+
+	oFs.writeFileSync('../crawl-server/public/searchIndex.json', JSON.stringify({
+		index: index.toJSON(), store: store
+	}));
+
 	console.log('all done');
-
-	// TODO 삭제 (확인용)
-	console.log(oResults);
-
 	process.exit(0);
 });
+
