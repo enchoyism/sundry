@@ -23,13 +23,28 @@
                 });
 
                 var searchFunc = function () {
-                    console.log('test');
                     var query = $('#searchField').val();
 
                     if (query === '') {
                         jQuery('#search-results').empty();
                     } else {
-                        var results = index.search(`*${query}*`);
+                        var aQuery = query.split(' ');
+                        var sSearch = '';
+                        const iLen = aQuery.length;
+                        for (var i = iLen; i >= 2; i--) {
+                            sSearch += `*${aQuery.join(' ')}*^${Math.pow(10, i)} `;
+                            aQuery.pop();
+                        }
+
+                        aQuery = query.split(' ');
+                        for (var i = 0; i < aQuery.length; i++) {
+                            sSearch += `*${aQuery[i]}*^1`;
+                            if (i === (aQuery.length - 1)) {
+                                sSearch += ' ';
+                            }
+                        }
+
+                        var results = index.search(`${sSearch}`);
                         data.then(function (data) {
                             if (results.length === 0) {
                                 $('#search-results').empty().append('<p><strong>No results found</strong></p>');

@@ -24,22 +24,22 @@ const oCrawlApiDoc = (sBaseUrl, sApiType, oCallback) => {
 		let $ = oCheerio.load(oBody), jQuery = $;
 		$ = oCheerio.load($('div > .content').html()), jQuery = $;
 
-		const aH2IdList = [];
+		const aHTagIdList = [];
 
-		$('h2').each((nIndex, oVal) => {
+		$('h1, h2').each((nIndex, oVal) => {
 			const oAttr = oVal.attribs || {};
 
 			if (typeof oAttr.id === 'string' || oAttr.id instanceof String) {
-				aH2IdList.push(oAttr.id);
+				aHTagIdList.push(oAttr.id);
 			}
 		});
 
-		oAsync.forEachOf(aH2IdList, (oVal, nIndex, _oCallback) => {
-			const sTitle = $(`#${aH2IdList[nIndex]}`).html();
-			const sHref = `${sBaseUrl}/${sApiType}/#${aH2IdList[nIndex]}`;
+		oAsync.forEachOf(aHTagIdList, (oVal, nIndex, _oCallback) => {
+			const sTitle = $(`#${aHTagIdList[nIndex]}`).html();
+			const sHref = `${sBaseUrl}/${sApiType}/#${aHTagIdList[nIndex]}`;
 			let sContents = '';
 
-			const oContents = $(`#${aH2IdList[nIndex]}`).nextUntil(`#${aH2IdList[nIndex + 1]}`);
+			const oContents = $(`#${aHTagIdList[nIndex]}`).nextUntil(`#${aHTagIdList[nIndex + 1]}`);
 			sContents = oHe.decode(oContents.text());
 			sContents = sContents.replace(/\s+/g, ' ').trim();
 
